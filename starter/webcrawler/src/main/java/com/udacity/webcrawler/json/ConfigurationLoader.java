@@ -35,7 +35,7 @@ public final class ConfigurationLoader {
     try(Reader reader = Files.newBufferedReader(path)){
       return read(reader);
     } catch (Exception e) {
-      e.getLocalizedMessage();
+      e.printStackTrace();
       return null;
     }
 
