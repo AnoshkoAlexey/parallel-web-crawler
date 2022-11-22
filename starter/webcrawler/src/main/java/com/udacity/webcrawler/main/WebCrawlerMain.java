@@ -11,10 +11,10 @@ import com.udacity.webcrawler.profiler.Profiler;
 import com.udacity.webcrawler.profiler.ProfilerModule;
 
 import javax.inject.Inject;
-import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public final class WebCrawlerMain {
@@ -31,22 +31,29 @@ public final class WebCrawlerMain {
   @Inject
   private Profiler profiler;
 
-  private void run() throws Exception {
+  private void run() {
     Guice.createInjector(new WebCrawlerModule(config), new ProfilerModule()).injectMembers(this);
 
     CrawlResult result = crawler.crawl(config.getStartPages());
-    CrawlResultWriter resultWriter = new CrawlResultWriter(result);
-    // TODO: Write the crawl results to a JSON file (or System.out if the file name is empty)
-    // TODO: Write the profile data to a text file (or System.out if the file name is empty)
+    CrawlResultWriter crawlResultWriter = new CrawlResultWriter(result);
+
+    if (!config.getResultPath().isEmpty()) {
+      Path path = Paths.get(config.getResultPath());
+      crawlResultWriter.write(path);
+    } else {
+      Writer writer = new OutputStreamWriter(System.out.printf(result.toString()));
+      crawlResultWriter.write(writer);
+    }
+
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     if (args.length != 1) {
       System.out.println("Usage: WebCrawlerMain [starting-url]");
       return;
     }
 
-    CrawlerConfiguration config = new ConfigurationLoader(Path.of(args[0])).load();
-    new WebCrawlerMain(config).run();
+    CrawlerConfiguration crawlerConfiguration = new ConfigurationLoader(Path.of(args[0])).load();
+    new WebCrawlerMain(crawlerConfiguration).run();
   }
 }
