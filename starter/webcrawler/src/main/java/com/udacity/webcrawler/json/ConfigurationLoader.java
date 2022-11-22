@@ -32,13 +32,12 @@ public final class ConfigurationLoader {
    */
   public CrawlerConfiguration load() {
 
-    Reader reader = null;
-    try {
-      reader = Files.newBufferedReader(path);
-    } catch (IOException e) {
-      e.printStackTrace();
+    try(Reader reader = Files.newBufferedReader(path)){
+      return read(reader);
+    } catch (Exception e) {
+      e.getLocalizedMessage();
+      return null;
     }
-    return read(reader);
 
   }
 
