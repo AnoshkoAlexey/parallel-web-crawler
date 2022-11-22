@@ -53,7 +53,7 @@ public final class WebCrawlerMain {
       return;
     }
 
-    CrawlerConfiguration config = new ConfigurationLoader(Path.of(args[0])).load();
-    new WebCrawlerMain(config).run();
+    CrawlerConfiguration crawlerConfiguration = new ConfigurationLoader(Path.of(args[0])).load();
+    new WebCrawlerMain(crawlerConfiguration).run();
   }
 }
