@@ -43,7 +43,7 @@ public final class WebCrawlerMain {
       Path path = Paths.get(config.getResultPath());
       crawlResultWriter.write(path);
     } else {
-      Writer writer = new OutputStreamWriter(System.out.printf(result.toString()));
+      Writer writer = new OutputStreamWriter(System.out);
       crawlResultWriter.write(writer);
     }
 
