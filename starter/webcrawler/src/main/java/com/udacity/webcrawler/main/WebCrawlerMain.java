@@ -37,23 +37,25 @@ public final class WebCrawlerMain {
     Guice.createInjector(new WebCrawlerModule(config), new ProfilerModule()).injectMembers(this);
 
     CrawlResult result = crawler.crawl(config.getStartPages());
+
     CrawlResultWriter crawlResultWriter = new CrawlResultWriter(result);
 
     if (!config.getResultPath().isEmpty()) {
       Path path = Paths.get(config.getResultPath());
       crawlResultWriter.write(path);
     } else {
-      Writer writer = new OutputStreamWriter(System.out);
-      crawlResultWriter.write(writer);
+      try (Writer writer = new OutputStreamWriter(System.out)) {
+        crawlResultWriter.write(writer);
+      }
     }
 
     if (!config.getProfileOutputPath().isEmpty()) {
       Path path = Paths.get(config.getProfileOutputPath());
       profiler.writeData(path);
     } else {
-      Writer writer = new OutputStreamWriter(System.out);
-      profiler.writeData(writer);
-      writer.flush();
+      try (Writer writer = new OutputStreamWriter(System.out)) {
+        profiler.writeData(writer);
+      }
     }
 
   }
